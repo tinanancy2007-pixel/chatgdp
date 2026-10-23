@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HYSS Jewelry — Fine Jewelry, Made to Be Worn</title>
+  <meta name="description" content="HYSS Jewelry: handcrafted rings, necklaces, earrings and bracelets in recycled gold and sterling silver.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2218%22 r=%229%22 fill=%22none%22 stroke=%22%23b08a3e%22 stroke-width=%223%22/%3E%3Ccircle cx=%2216%22 cy=%227%22 r=%223.5%22 fill=%22%23b08a3e%22/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="announce">Free shipping on orders over $150 · 30-day returns</div>
+
+  <header class="header">
+    <div class="container header__inner">
+      <button class="icon-btn menu-toggle" aria-label="Open menu" aria-expanded="false" data-menu-toggle>
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+      </button>
+      <a href="#top" class="logo">HYSS</a>
+      <nav class="nav" data-nav>
+        <a href="#shop">Shop</a>
+        <a href="#collections">Collections</a>
+        <a href="#story">Our Story</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="icon-btn cart-btn" aria-label="Open cart" data-cart-open>
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 7h12l-1 13H7L6 7Zm3 0a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        <span class="cart-count" data-cart-count>0</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero__inner">
+        <div class="hero__text">
+          <p class="eyebrow">The Autumn Edit</p>
+          <h1>Quiet pieces,<br><em>made to be kept.</em></h1>
+          <p class="lead">Handcrafted fine jewelry in recycled 14k gold and sterling silver, designed for every day and made to last a lifetime.</p>
+          <div class="hero__actions">
+            <a href="#shop" class="btn btn--dark">Shop the collection</a>
+            <a href="#story" class="btn btn--ghost">Our story</a>
+          </div>
+        </div>
+        <div class="hero__art" aria-hidden="true" data-hero-art></div>
+      </div>
+    </section>
+
+    <section id="collections" class="section">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow">Collections</p>
+          <h2>Shop by category</h2>
+        </div>
+        <div class="categories" data-categories></div>
+      </div>
+    </section>
+
+    <section id="shop" class="section section--tinted">
+      <div class="container">
+        <div class="section__head section__head--row">
+          <div>
+            <p class="eyebrow">The Shop</p>
+            <h2>All jewelry</h2>
+          </div>
+          <div class="toolbar">
+            <div class="filters" role="tablist" data-filters></div>
+            <label class="sort">
+              <span class="visually-hidden">Sort by</span>
+              <select data-sort>
+                <option value="featured">Featured</option>
+                <option value="price-asc">Price: low to high</option>
+                <option value="price-desc">Price: high to low</option>
+                <option value="name">Name</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div class="grid" data-grid></div>
+      </div>
+    </section>
+
+    <section id="story" class="section story">
+      <div class="container story__inner">
+        <div class="story__art" aria-hidden="true" data-story-art></div>
+        <div class="story__text">
+          <p class="eyebrow">Our Story</p>
+          <h2>Small studio, slow craft.</h2>
+          <p>HYSS began at a single workbench with one idea: jewelry should feel personal, not precious. Every piece is designed in-house and finished by hand in small batches, so nothing is made that won't be loved.</p>
+          <p>We work only with recycled metals and responsibly sourced stones, and we'll repair or resize anything we make, for as long as you own it.</p>
+          <ul class="values">
+            <li><strong>Recycled metals</strong><span>14k gold, gold vermeil &amp; 925 silver</span></li>
+            <li><strong>Hand finished</strong><span>Polished and set in our studio</span></li>
+            <li><strong>Lifetime care</strong><span>Free cleaning &amp; repairs</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tinted">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow">Kind Words</p>
+          <h2>Worn and loved</h2>
+        </div>
+        <div class="reviews">
+          <figure class="review">
+            <blockquote>“The Luna ring hasn't left my finger since it arrived. It feels delicate but it's held up to everything.”</blockquote>
+            <figcaption>— Mei L.</figcaption>
+          </figure>
+          <figure class="review">
+            <blockquote>“Beautiful packaging, beautiful necklace. I bought a second one as a gift the same week.”</blockquote>
+            <figcaption>— Jordan P.</figcaption>
+          </figure>
+          <figure class="review">
+            <blockquote>“They resized my ring for free and had it back to me in four days. Lovely people.”</blockquote>
+            <figcaption>— Ana R.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container contact">
+        <div>
+          <p class="eyebrow">Stay in touch</p>
+          <h2>Join the HYSS list</h2>
+          <p>New pieces, studio notes and early access to limited drops. No spam, ever.</p>
+          <form class="newsletter" data-newsletter novalidate>
+            <label class="visually-hidden" for="email">Email address</label>
+            <input id="email" type="email" placeholder="Your email address" required>
+            <button class="btn btn--dark" type="submit">Subscribe</button>
+          </form>
+          <p class="form-msg" data-newsletter-msg role="status"></p>
+        </div>
+        <div class="contact__info">
+          <h3>Customer care</h3>
+          <p>Questions about sizing, gifting or care? We reply within one business day.</p>
+          <p><a href="mailto:hello@hyssjewelry.com">hello@hyssjewelry.com</a></p>
+          <p>Mon–Fri, 9am–5pm</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <a href="#top" class="logo logo--light">HYSS</a>
+        <p>Fine jewelry, made to be worn.</p>
+      </div>
+      <div class="footer__links">
+        <a href="#shop">Shop</a>
+        <a href="#story">Our Story</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <p class="footer__copy">© <span data-year></span> HYSS Jewelry. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Cart drawer -->
+  <div class="overlay" data-overlay hidden></div>
+  <aside class="drawer" aria-label="Shopping cart" aria-hidden="true" data-drawer>
+    <div class="drawer__head">
+      <h3>Your bag</h3>
+      <button class="icon-btn" aria-label="Close cart" data-cart-close>
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+    </div>
+    <div class="drawer__body" data-cart-items></div>
+    <div class="drawer__foot">
+      <div class="drawer__total"><span>Subtotal</span><strong data-cart-subtotal>$0</strong></div>
+      <p class="drawer__note">Shipping and taxes calculated at checkout.</p>
+      <button class="btn btn--dark btn--block" data-checkout>Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Product quick view -->
+  <dialog class="modal" data-modal>
+    <button class="icon-btn modal__close" aria-label="Close" data-modal-close>
+      <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.5"/></svg>
+    </button>
+    <div class="modal__inner" data-modal-body></div>
+  </dialog>
+
+  <div class="toast" role="status" data-toast></div>
+
+  <script src="assets/products.js"></script>
+  <script src="assets/art.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
