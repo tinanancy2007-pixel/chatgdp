@@ -1,0 +1,229 @@
+<title>微信群报价汇总</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Serif+SC:wght@700&display=swap">
+<style>
+/* Layout: one working column — paste box on top, summary strip, then grouped price table. Port-yard steel neutrals with container-blue accent. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --fg:#1b2430; --muted:#5d6b7a; --line:#d8dee5;
+  --accent:#1f5f8b; --accent-soft:#e3eef6; --best:#1e7a4c; --best-soft:#e2f3ea; --warn:#9a5a00;
+  --f-display:"Noto Serif SC","Songti SC","SimSun",serif;
+  --f-body:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12171d; --panel:#1a2129; --fg:#e4e9ee; --muted:#93a1af; --line:#2c3641;
+  --accent:#6fb0dd; --accent-soft:#1d3142; --best:#5fcf95; --best-soft:#173226; --warn:#e0a24a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171d; --panel:#1a2129; --fg:#e4e9ee; --muted:#93a1af; --line:#2c3641;
+  --accent:#6fb0dd; --accent-soft:#1d3142; --best:#5fcf95; --best-soft:#173226; --warn:#e0a24a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:20px}
+h1{font-family:var(--f-display);font-size:1.75rem;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;max-width:65ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px;min-width:0}
+label.lbl{font-size:.8rem;letter-spacing:.06em;color:var(--muted)}
+textarea{width:100%;box-sizing:border-box;min-height:180px;resize:vertical;font:13px/1.5 var(--f-mono);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:inherit;font-size:.9rem;padding:7px 14px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=search],select{font:inherit;font-size:.9rem;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);min-width:0}
+.note{font-size:.85rem;color:var(--muted)}
+.tag-sample{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
+.stats{display:flex;flex-wrap:wrap;gap:24px}
+.stat b{display:block;font:600 1.4rem var(--f-mono);font-variant-numeric:tabular-nums}
+.stat span{font-size:.8rem;color:var(--muted)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:640px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.05em;color:var(--muted);font-weight:600;cursor:pointer;white-space:nowrap}
+tr.grp td{background:var(--accent-soft);color:var(--accent);font-weight:600}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+tr.best td.num{color:var(--best);font-weight:600}
+.pill{display:inline-block;font-size:.72rem;padding:1px 7px;border-radius:99px;background:var(--best-soft);color:var(--best);margin-left:6px}
+.raw{color:var(--muted);font-size:.82rem;max-width:42ch}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:6px;font-size:.9rem}
+@media (prefers-reduced-motion:no-preference){button{transition:background .15s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>微信群报价汇总</h1>
+    <p class="sub">把群聊记录复制粘贴到下面（支持电脑微信多选复制、合并转发、每日存档 txt），自动找出每条报价，按线路/品名分组，并标出最低价。数据只在你自己的浏览器里处理。</p>
+  </header>
+
+  <section class="panel">
+    <div class="row" style="justify-content:space-between">
+      <label class="lbl" for="src">聊天记录</label>
+      <span id="sampleTag" class="tag-sample">当前是示例数据，不是你的群消息</span>
+    </div>
+    <textarea id="src" spellcheck="false"></textarea>
+    <div class="row">
+      <button class="primary" id="run">汇总</button>
+      <button id="loadFile">打开存档文件</button>
+      <input type="file" id="file" accept=".txt,.csv,.log,.md" hidden>
+      <button id="clear">清空</button>
+      <button id="sample">载入示例</button>
+    </div>
+  </section>
+
+  <section class="panel" id="out">
+    <div class="stats" id="stats"></div>
+    <div class="row">
+      <input type="search" id="q" placeholder="筛选：线路、品名、报价人…" style="flex:1 1 220px">
+      <select id="view" aria-label="显示方式">
+        <option value="all">每组全部报价</option>
+        <option value="best">每组只看最低价</option>
+      </select>
+      <button id="copyTsv">复制表格（可粘贴到 Excel）</button>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th data-k="sender">报价人</th><th data-k="time">时间</th><th data-k="item">线路 / 品名</th><th data-k="spec">规格</th><th data-k="price" style="text-align:right">价格</th><th>原文</th></tr></thead>
+      <tbody id="body"></tbody>
+    </table></div>
+    <p class="note">识别规则：带“元/块/￥/RMB/USD/$”或“/吨 /柜 /箱 /车 /票”的数字算作价格；“A-B”“A到B”算作线路；20GP/40HQ/小柜/大柜等算作规格。识别不准的，在原文里改一下再点“汇总”。</p>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const SAMPLE = `【示例】天港拖车群 2026-10-26
+王师傅 2026-10-26 09:12:05
+新港-石家庄 40HQ 2650元/柜，20GP 1900
+李经理 2026-10-26 09:30:41
+新港到石家庄 40HQ 2580，含高速
+赵调度 2026-10-26 10:02:13
+今日报价：新港-保定 20GP 1500/柜；40HQ 2100/柜
+王师傅 2026-10-26 10:45:00
+新港-保定 40HQ 2050元
+张总 2026-10-26 11:20:33
+各位有没有去沧州的车？
+李经理 2026-10-26 13:05:10
+新港-沧州 小柜 1200元 大柜 1650元
+赵调度 2026-10-26 14:40:52
+新港-石家庄 20GP 1850元/柜 不含税`;
+
+const $ = id => document.getElementById(id);
+const HEAD = /^(.{1,30}?)[\s　]+((?:\d{4}[-/.年])?\d{1,2}[-/.月]\d{1,2}日?\s+)?(\d{1,2}:\d{2}(?::\d{2})?)$/;
+const COLON = /^([^\s:：]{1,16})[:：]\s*(.+)$/;
+const SPEC = /(20\s*GP|40\s*GP|40\s*HQ|45\s*HQ|20\s*尺|40\s*尺|40\s*高柜|小柜|大柜|高柜|平柜|开顶柜|框架柜|冷柜|平板|高低板)/i;
+const ROUTE = /([一-龥A-Za-z]{2,8})\s*(?:-|—|–|~|到|至|→|->)\s*([一-龥A-Za-z]{2,8})/;
+const PRICE = /(?:[￥¥$]|RMB|USD)\s*(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s*(元|块|美金|美元|RMB|USD)?\s*(\/\s*(?:吨|柜|箱|车|票|T|t|方|件)|每(?:吨|柜|箱|车))?/g;
+
+let rows = [], sortKey = null, sortDir = 1;
+
+function parseMessages(text){
+  const lines = text.replace(/\r/g,'').split('\n');
+  const msgs = []; let cur = null;
+  const headerMode = lines.some(l=>HEAD.test(l.trim()));
+  for (const raw of lines){
+    const line = raw.trim(); if (!line) continue;
+    const h = line.match(HEAD);
+    if (h){ cur = {sender:h[1].trim(), time:((h[2]||'')+h[3]).trim(), text:[]}; msgs.push(cur); continue; }
+    const c = line.match(COLON);
+    if (!headerMode && c && !/\d/.test(c[1])){ cur = {sender:c[1], time:'', text:[c[2]]}; msgs.push(cur); continue; }
+    if (!cur){ cur = {sender:'', time:'', text:[]}; msgs.push(cur); }
+    cur.text.push(line);
+  }
+  return msgs;
+}
+
+function extract(msg){
+  const out = [];
+  let lastRoute = '';
+  for (const para of msg.text){
+    const parts = para.split(/[；;。\n]|，(?=[^，]*\d)|,(?=[^,]*\d)|\s{2,}/).map(s=>s.trim()).filter(Boolean);
+    for (const seg of parts){
+      const r = seg.match(ROUTE);
+      if (r) lastRoute = r[1]+'-'+r[2];
+      // one segment may hold several spec+price pairs: "小柜 1200元 大柜 1650元"
+      const pieces = seg.split(new RegExp('(?='+SPEC.source+')','i')).filter(Boolean);
+      for (const p of pieces){
+        const spec = (p.match(SPEC)||[''])[0].replace(/\s+/g,'').toUpperCase();
+        let best = null;
+        PRICE.lastIndex = 0; let m;
+        while ((m = PRICE.exec(p))){
+          const val = parseFloat(m[1]||m[2]);
+          const hasUnit = m[1] || m[3] || m[4];
+          // a bare number counts only if it is not part of a spec (20/40) or a time/date
+          if (!hasUnit && (val < 50 || /^(20|40|45)$/.test(m[2]))) continue;
+          if (!hasUnit && !spec && !r) continue;
+          best = {val, unit:(m[4]||'').replace(/\s/g,'').replace('每','/') , cur:/美|USD|\$/i.test(m[0])?'USD':'RMB'};
+          break;
+        }
+        if (!best) continue;
+        const item = lastRoute || p.replace(SPEC,'').replace(PRICE,'').replace(/[，,：:]/g,' ').trim().slice(0,20) || '（未识别品名）';
+        out.push({sender:msg.sender||'—', time:msg.time, item, spec, price:best.val, unit:best.unit, cur:best.cur, raw:seg});
+      }
+    }
+  }
+  return out;
+}
+
+function run(){
+  const text = $('src').value;
+  rows = parseMessages(text).flatMap(extract);
+  try{ localStorage.setItem('qs-draft', text); }catch(e){}
+  $('sampleTag').hidden = text.trim() !== SAMPLE.trim();
+  render();
+}
+
+function groups(list){
+  const g = new Map();
+  for (const r of list){ const k = r.item+'｜'+r.spec; if(!g.has(k)) g.set(k,[]); g.get(k).push(r); }
+  for (const arr of g.values()){
+    arr.sort((a,b)=> sortKey ? cmp(a,b) : a.price-b.price);
+    const min = Math.min(...arr.map(x=>x.price));
+    arr.forEach(x=> x.best = x.price===min);
+  }
+  return [...g.entries()].sort((a,b)=>a[0].localeCompare(b[0],'zh'));
+}
+function cmp(a,b){ const x=a[sortKey], y=b[sortKey]; return (typeof x==='number'? x-y : String(x).localeCompare(String(y),'zh'))*sortDir; }
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = r => (r.cur==='USD'?'$':'¥')+r.price.toLocaleString('zh-CN')+(r.unit||'');
+
+function visible(){
+  const q = $('q').value.trim().toLowerCase();
+  const list = q ? rows.filter(r=>[r.sender,r.item,r.spec,r.raw].join(' ').toLowerCase().includes(q)) : rows;
+  let g = groups(list);
+  if ($('view').value==='best') g = g.map(([k,a])=>[k,a.filter(x=>x.best)]);
+  return g;
+}
+
+function render(){
+  const g = visible();
+  const senders = new Set(rows.map(r=>r.sender));
+  $('stats').innerHTML = [
+    [rows.length,'条报价'],[groups(rows).length,'个线路/品名'],[senders.size,'位报价人']
+  ].map(([n,l])=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('');
+  if (!g.length){ $('body').innerHTML = `<tr><td colspan="6" class="empty">没有找到报价。确认粘贴的内容里有“数字+元/柜”之类的价格。</td></tr>`; return; }
+  $('body').innerHTML = g.map(([k,arr])=>{
+    const [item,spec] = k.split('｜');
+    const head = `<tr class="grp"><td colspan="6">${esc(item)}${spec?' · '+esc(spec):''}　<span style="font-weight:400">${arr.length} 条</span></td></tr>`;
+    return head + arr.map(r=>`<tr class="${r.best?'best':''}"><td>${esc(r.sender)}</td><td class="num" style="text-align:left">${esc(r.time)}</td><td>${esc(r.item)}</td><td>${esc(r.spec)}</td><td class="num">${fmt(r)}${r.best?'<span class="pill">最低</span>':''}</td><td class="raw">${esc(r.raw)}</td></tr>`).join('');
+  }).join('');
+}
+
+function toast(t){ const el=$('toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true,1800); }
+
+$('run').onclick = run;
+$('clear').onclick = ()=>{ $('src').value=''; run(); $('src').focus(); };
+$('sample').onclick = ()=>{ $('src').value=SAMPLE; run(); };
+$('q').oninput = render; $('view').onchange = render;
+$('loadFile').onclick = ()=> $('file').click();
+$('file').onchange = e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ $('src').value=rd.result; run(); toast('已读取 '+f.name); }; rd.readAsText(f,'utf-8'); };
+document.querySelectorAll('th[data-k]').forEach(th=> th.onclick=()=>{ const k=th.dataset.k; sortDir = sortKey===k ? -sortDir : 1; sortKey=k; render(); });
+$('copyTsv').onclick = async ()=>{
+  const lines = [['报价人','时间','线路/品名','规格','价格','单位','币种','最低价','原文'].join('\t')];
+  for (const [,arr] of visible()) for (const r of arr) lines.push([r.sender,r.time,r.item,r.spec,r.price,r.unit,r.cur,r.best?'是':'',r.raw.replace(/\t/g,' ')].join('\t'));
+  const txt = lines.join('\n');
+  try{ await navigator.clipboard.writeText(txt); toast('已复制 '+(lines.length-1)+' 行，可直接粘贴到 Excel'); }
+  catch(e){ $('src').value = txt; $('src').select(); toast('浏览器不允许复制，表格已放进上方文本框并选中，请手动复制'); }
+};
+
+let draft = null; try{ draft = localStorage.getItem('qs-draft'); }catch(e){}
+$('src').value = draft && draft.trim() ? draft : SAMPLE;
+run();
+</script>
